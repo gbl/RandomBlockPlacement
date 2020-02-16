@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "de.guntram.mcmod.randomblockplacement.mixins",
+    "refmap": "RandomBlockPlacement-refmap.json",
+    "minVersion": "0.6",
+    "client": [
+        "PlayerInteractBlockMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

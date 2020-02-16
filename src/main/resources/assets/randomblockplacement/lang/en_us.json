@@ -1,0 +1,6 @@
+{
+    "key.categories.randomblockplacement": "RandomBlockPlacement",
+    
+    "msg.active": "Randomly switching between inventory positions %d and %d",
+    "msg.inactive" : "RandomBlockPlacement inactive"
+}

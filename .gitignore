@@ -1,5 +1,2 @@
-build
-gradle
-.gradle
-.nb-gradle
-gradlew
+.gradle/
+build/

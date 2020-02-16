@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "id": "randomblockplacement",
+    "version": "1.15-fabric0.4.23-1.0",
+    "environment": "client",
+    "entrypoints": {
+        "client": [ "de.guntram.mcmod.randomblockplacement.RandomBlockPlacement" ],
+        "cotton-client-commands": ["de.guntram.mcmod.randomblockplacement.RandomBlockPlacement"]
+    },
+    "custom": {
+        "modmenu:clientsideOnly": true
+    },
+    "mixins": [
+      	"mixins.randomblockplacement.json"
+    ],
+    "depends": {
+      "fabric": "*"
+    },
+    "recommends": {
+      "modmenu" : "*"
+    },
+    "name": "RandomBlockPlacement",
+    "description": "Markers to help with counting blocks, building circles, and showing possible mob spawn locations",
+    "icon": "pack.png",
+    "authors": [ "Giselbaer" ],
+    "contact": {
+        "homepage": "https://minecraft.curseforge.com/projects/randomblockplacement",
+        "sources": "https://github.com/gbl/RandomBlockPlacement",
+        "issues": "https://github.com/gbl/RandomBlockPlacement/issues"
+    }
+}
