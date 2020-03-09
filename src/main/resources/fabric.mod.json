@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "randomblockplacement",
-    "version": "1.14.4-fabric0.4.1-1.0",
+    "version": "${version}",
     "environment": "client",
     "entrypoints": {
         "client": [ "de.guntram.mcmod.randomblockplacement.RandomBlockPlacement" ],
@@ -20,11 +20,11 @@
       "modmenu" : "*"
     },
     "name": "RandomBlockPlacement",
-    "description": "Markers to help with counting blocks, building circles, and showing possible mob spawn locations",
+    "description": "Randomly switch between hotbar slots to build structures consisting of a mix of several blocks",
     "icon": "pack.png",
     "authors": [ "Giselbaer" ],
     "contact": {
-        "homepage": "https://minecraft.curseforge.com/projects/randomblockplacement",
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/randomblockplacement",
         "sources": "https://github.com/gbl/RandomBlockPlacement",
         "issues": "https://github.com/gbl/RandomBlockPlacement/issues"
     }

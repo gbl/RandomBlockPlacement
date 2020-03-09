@@ -3,7 +3,6 @@ package de.guntram.mcmod.randomblockplacement;
 import com.mojang.brigadier.CommandDispatcher;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import de.guntram.mcmod.fabrictools.ConfigurationProvider;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.argument;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.literal;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
@@ -26,7 +25,6 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     static final String VERSION="@VERSION@";
 
     private static RandomBlockPlacement instance;
-    private static ConfigurationHandler confHandler;
     private boolean isActive;
     private int minSlot, maxSlot;
     private FabricKeyBinding onOff;
@@ -34,9 +32,6 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     @Override
     public void onInitializeClient() {
         instance = this;
-        confHandler = ConfigurationHandler.getInstance();
-        ConfigurationProvider.register(MODNAME, confHandler);
-        confHandler.load(ConfigurationProvider.getSuggestedFile(MODID));
         
         isActive=false;
         minSlot=maxSlot=-1;
@@ -82,7 +77,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
                 .then(
                     literal("off").executes(c->{
                         instance.isActive=false;
-                        MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.inactive"), false);
+                        MinecraftClient.getInstance().player.addMessage(new TranslatableText("msg.inactive"), false);
                         return 1;
                     })
                 )
@@ -96,7 +91,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
                             instance.maxSlot = getInteger(c, "b2");
                             System.out.println("got both");
                             try {
-                            MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.active", 
+                            MinecraftClient.getInstance().player.addMessage(new TranslatableText("msg.active", 
                                     instance.minSlot, instance.maxSlot), false);
                             } catch (Exception ex) {
                                 ex.printStackTrace(System.out);
