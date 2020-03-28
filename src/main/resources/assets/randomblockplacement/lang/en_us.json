@@ -1,5 +1,6 @@
 {
     "key.categories.randomblockplacement": "RandomBlockPlacement",
+    "key.randomblockplacement.toggle": "Randomizer on/off",
     
     "msg.active": "Randomly switching between inventory positions %d and %d",
     "msg.inactive" : "RandomBlockPlacement inactive"
