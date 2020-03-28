@@ -3,7 +3,6 @@ package de.guntram.mcmod.randomblockplacement;
 import com.mojang.brigadier.CommandDispatcher;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import de.guntram.mcmod.fabrictools.ConfigurationProvider;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.argument;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.literal;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
@@ -11,10 +10,14 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
-
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
@@ -26,7 +29,6 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     static final String VERSION="@VERSION@";
 
     private static RandomBlockPlacement instance;
-    private static ConfigurationHandler confHandler;
     private boolean isActive;
     private int minSlot, maxSlot;
     private FabricKeyBinding onOff;
@@ -34,12 +36,11 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     @Override
     public void onInitializeClient() {
         instance = this;
-        confHandler = ConfigurationHandler.getInstance();
-        ConfigurationProvider.register(MODNAME, confHandler);
-        confHandler.load(ConfigurationProvider.getSuggestedFile(MODID));
-        
+        setKeyBindings();
+
         isActive=false;
-        minSlot=maxSlot=-1;
+        minSlot=0;
+        maxSlot=8;
     }
     
     private void setKeyBindings() {
@@ -49,28 +50,66 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
             onOff = FabricKeyBinding.Builder
                 .create(new Identifier("randomblockplacement:toggle"), InputUtil.Type.KEYSYM, GLFW_KEY_R, category)
                 .build());
+        ClientTickCallback.EVENT.register(e->processKeyBinds());
     }
     
+    private void processKeyBinds() {
+        if (onOff.wasPressed()) {
+            if (isActive) {
+                instance.setInactive();
+            } else {
+                instance.setActive();
+            }
+        }
+    }
+
     public static RandomBlockPlacement getInstance() {
         return instance;
     }
+
+    public void setInactive() {
+        MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.inactive"), false);
+        isActive=false;
+    }
+
+    public void setActive(int first, int last) {
+        minSlot = first-1;
+        maxSlot = last-1;
+        setActive();
+    }
     
+    public void setActive() {
+        isActive = true;
+        MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
+    }
+
     public void onPlayerInteract() {
         PlayerInventory inventory = MinecraftClient.getInstance().player.inventory;
         int index=inventory.selectedSlot;
-        if (isActive && index>=minSlot && index<=maxSlot) {
-            int totalItems=0;
+        if (isActive && index>=minSlot && index<=maxSlot
+            && ( inventory.getInvStack(index).getItem() == Items.AIR
+                || inventory.getInvStack(index).getItem() instanceof BlockItem)) {
+            int totalBlocks=0;
             for (int i=minSlot; i<=maxSlot; i++) {
-                totalItems+=inventory.getInvStack(i).getCount();
+                totalBlocks+=getBlockCount(inventory, i);
             }
-            int target=(int) (Math.random()*totalItems);
+            int targetCount=(int) (Math.random()*totalBlocks);
             int targetSlot=minSlot;
-            while (targetSlot<maxSlot && target>=inventory.getInvStack(targetSlot).getCount()) {
-                target-=inventory.getInvStack(targetSlot).getCount();
+            while (targetSlot<maxSlot && targetCount>=getBlockCount(inventory, targetSlot)) {
+                targetCount-=getBlockCount(inventory, targetSlot);
                 targetSlot++;
             }
-            System.out.println("selecting slot "+targetSlot);
             inventory.selectedSlot=targetSlot;
+        }
+    }
+    
+    private int getBlockCount(PlayerInventory inventory, int targetSlot) {
+        ItemStack stack = inventory.getInvStack(targetSlot);
+        Item item = stack.getItem();
+        if (item instanceof BlockItem) {
+            return stack.getCount();
+        } else {
+            return 0;
         }
     }
     
@@ -81,28 +120,14 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
             literal("rblock")
                 .then(
                     literal("off").executes(c->{
-                        instance.isActive=false;
-                        MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.inactive"), false);
+                        instance.setInactive();
                         return 1;
                     })
                 )
                 .then(
                     argument("b1", integer(1, 9)).then (
                         argument("b2", integer(1, 9)).executes(c->{
-                            instance.isActive = true;
-                            System.out.println("try to get b1");
-                            instance.minSlot = getInteger(c, "b1");
-                            System.out.println("try to get b2");
-                            instance.maxSlot = getInteger(c, "b2");
-                            System.out.println("got both");
-                            try {
-                            MinecraftClient.getInstance().player.addChatMessage(new TranslatableText("msg.active", 
-                                    instance.minSlot, instance.maxSlot), false);
-                            } catch (Exception ex) {
-                                ex.printStackTrace(System.out);
-                            }
-                            instance.minSlot--;
-                            instance.maxSlot--;
+                            instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
                             return 1;
                         })
                     )

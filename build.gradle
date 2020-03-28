@@ -4,7 +4,7 @@ plugins {
 
 repositories {
 	maven {
-		url = "https://maven.fabricmc.net/io/github/prospector/modmenu/ModMenu/"
+		url = "https://maven.fabricmc.net/"
 	}
 	maven {
 		url = "https://minecraft.guntram.de/maven/"
@@ -19,10 +19,21 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 archivesBaseName = "randomblockplacement"
-version = "1.14.4-fabric0.4.1-1.0"
+version = "1.14.4-fabric0.4.1-1.1"
 
 minecraft {
     refmapName = "RandomBlockPlacement-refmap.json";
+}
+
+processResources {
+	inputs.property "version", project.version
+    from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
+	}
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
 }
 
 dependencies {
