@@ -67,7 +67,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     }
 
     public void setInactive() {
-        MinecraftClient.getInstance().player.addMessage(new TranslatableText("msg.inactive"), false);
+        MinecraftClient.getInstance().player.sendMessage(new TranslatableText("msg.inactive"), false);
         isActive=false;
     }
 
@@ -79,7 +79,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     
     public void setActive() {
         isActive = true;
-        MinecraftClient.getInstance().player.addMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
+        MinecraftClient.getInstance().player.sendMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
     }
 
     public void onPlayerInteract() {
