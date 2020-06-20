@@ -26,7 +26,6 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
 {
     static final String MODID="randomblockplacement";
     static final String MODNAME="RandomBlockPlacement";
-    static final String VERSION="@VERSION@";
 
     private static RandomBlockPlacement instance;
     private boolean isActive;
