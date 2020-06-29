@@ -21,7 +21,7 @@
     },
     "name": "RandomBlockPlacement",
     "description": "Randomly switch between hotbar slots to build structures consisting of a mix of several blocks",
-    "icon": "pack.png",
+    "icon": "icon.png",
     "authors": [ "Giselbaer" ],
     "contact": {
         "homepage": "https://www.curseforge.com/minecraft/mc-mods/randomblockplacement",
