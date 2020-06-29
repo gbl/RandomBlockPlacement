@@ -25,14 +25,9 @@ ext.Versions = new Properties()
 Versions.load(file("Versionfiles/mcversion-1.16.properties").newReader())
 
 archivesBaseName = "randomblockplacement"
-ext.projectVersion = "1.1"
+ext.projectVersion = "1.1.1"
 
 version = "${Versions['minecraft_version']}-fabric${Versions['fabric_versiononly']}-${project.projectVersion}"
-
-// This is a temporary fix to get my own fork of ccc which fixes the crash
-// when command parameters are wrong.
-
-Versions["ccc_version"]="1.0.1+1.16-rc1"
 
 minecraft {
     refmapName = "RandomBlockPlacement-refmap.json";

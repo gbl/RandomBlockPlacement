@@ -8,7 +8,11 @@
         "cotton-client-commands": ["de.guntram.mcmod.randomblockplacement.RandomBlockPlacement"]
     },
     "custom": {
-        "modmenu:clientsideOnly": true
+        "modmenu:clientsideOnly": true,
+        "modupdater": {
+            "strategy": "json",
+            "url": "https://raw.githubusercontent.com/gbl/ModVersionInfo/master/RandomBlockPlacement.json"
+        }
     },
     "mixins": [
       	"mixins.randomblockplacement.json"
@@ -17,7 +21,8 @@
       "fabric": "*"
     },
     "recommends": {
-      "modmenu" : "*"
+      "modmenu" : "*",
+      "modupdater": ">=1.1.7"        
     },
     "name": "RandomBlockPlacement",
     "description": "Randomly switch between hotbar slots to build structures consisting of a mix of several blocks",
