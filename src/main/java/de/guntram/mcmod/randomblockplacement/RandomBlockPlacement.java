@@ -1,143 +1,124 @@
 package de.guntram.mcmod.randomblockplacement;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = RandomBlockPlacement.MODID, 
-        version = RandomBlockPlacement.VERSION,
-	clientSideOnly = true, 
-	guiFactory = "de.guntram.mcmod.randomblockplacement.GuiFactory",
-	acceptedMinecraftVersions = "[1.12]",
-	updateJSON="https://raw.githubusercontent.com/gbl/RandomBlockPlacement/master/versioncheck.json"
-)
+@Mod("randomblockplacement")
 
-public class RandomBlockPlacement implements ICommand
+public class RandomBlockPlacement
 {
     static final String MODID="randomblockplacement";
     static final String VERSION="@VERSION@";
+    static KeyBinding onOff;
     
+    private static RandomBlockPlacement instance;
     private boolean isActive;
     private int minSlot, maxSlot;
     
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-        ClientCommandHandler.instance.registerCommand(this);
-    }
-
-    @EventHandler
-    public void preInit(final FMLPreInitializationEvent event) {
-        ConfigurationHandler confHandler = ConfigurationHandler.getInstance();
-        confHandler.load(event.getSuggestedConfigurationFile());
-        MinecraftForge.EVENT_BUS.register(confHandler);
-        
-        isActive=false;
-        minSlot=maxSlot=-1;
+    public RandomBlockPlacement() {
+        instance = this;
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(this::init);        
     }
     
+    public void init(FMLCommonSetupEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+        // ClientCommandHandler.instance.registerCommand(this);
+        ClientRegistry.registerKeyBinding(onOff =
+                new KeyBinding("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement"));
+    }
+    
+    public static RandomBlockPlacement getInstance() {
+        return instance;
+    }
+
+    public void setInactive() {
+        Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.inactive"), false);
+        isActive=false;
+    }
+
+    public void setActive(int first, int last) {
+        minSlot = first-1;
+        maxSlot = last-1;
+        setActive();
+    }
+    
+    public void setActive() {
+        isActive = true;
+        Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.active", minSlot+1, maxSlot+1), false);
+    }
+    
+   
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock e) {
-        if (e.getSide() != Side.CLIENT)
+        if (e.getSide() != LogicalSide.CLIENT)
             return;
-        InventoryPlayer inventory = Minecraft.getMinecraft().player.inventory;
+        PlayerInventory inventory = Minecraft.getInstance().player.inventory;
         int index=inventory.currentItem;
-        if (isActive && index>=minSlot && index<=maxSlot) {
-            int totalItems=0;
+        if (isActive && index>=minSlot && index<=maxSlot
+            && ( inventory.getStackInSlot(index).getItem() == Items.AIR
+                || inventory.getStackInSlot(index).getItem() instanceof BlockItem)) {
+            int totalBlocks=0;
             for (int i=minSlot; i<=maxSlot; i++) {
-                totalItems+=inventory.getStackInSlot(i).getCount();
+                totalBlocks+=getBlockCount(inventory, i);
             }
-            int target=(int) (Math.random()*totalItems);
+            int targetCount=(int) (Math.random()*totalBlocks);
             int targetSlot=minSlot;
-            while (targetSlot<maxSlot && target>=inventory.getStackInSlot(targetSlot).getCount()) {
-                target-=inventory.getStackInSlot(targetSlot).getCount();
+            while (targetSlot<maxSlot && targetCount>=getBlockCount(inventory, targetSlot)) {
+                targetCount-=getBlockCount(inventory, targetSlot);
                 targetSlot++;
             }
             inventory.currentItem=targetSlot;
         }
     }
-
-    @Override
-    public String getName() {
-        return "rblock";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender) {
-        return "rblock firstslot secondslot or rblock off";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        int first=0, second=0;
-        if (args.length==1 && args[0].equals("off")) {
-            isActive=false;
-        }
-        if (args.length>=2) {
-            boolean parsed=false;
-            try {
-                first=Integer.parseInt(args[0]);
-                second=Integer.parseInt(args[1]);
-                parsed=true;
-            } catch (NumberFormatException ex) {
-                
-            }
-            if (parsed && first>=1 && second>=1 && first<=9 && second<=9) {
-                isActive=true;
-                minSlot=first-1;
-                maxSlot=second-1;
-            } else {
-                isActive=false;
-            }
-        }
-        if (isActive) {
-            player.sendMessage(new TextComponentString("Randomly switching between inventory positions "+(minSlot+1)+" and "+(maxSlot+1)));
+    
+    private int getBlockCount(PlayerInventory inventory, int targetSlot) {
+        ItemStack stack = inventory.getStackInSlot(targetSlot);
+        Item item = stack.getItem();
+        if (item instanceof BlockItem) {
+            return stack.getCount();
         } else {
-            player.sendMessage(new TextComponentString("RandomBlockPlacement inactive"));
+            return 0;
         }
     }
 
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
-        return new ArrayList<String>();
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index) {
-        return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return getName().compareTo(o.getName());
+    @SubscribeEvent
+    public void chatEvent(final ClientChatEvent e) {
+        if (e.getOriginalMessage().startsWith("/rblock")) {
+            String[] parms = e.getOriginalMessage().split(" ");
+            if (parms.length > 1 && parms[1].equals("off")) {
+                instance.setInactive();
+                return;
+            }
+            if (parms.length > 2) {
+                try {
+                    int b1 = Integer.parseInt(parms[1]);
+                    int b2 = Integer.parseInt(parms[2]);
+                    if (b1 < 1 || b1 > 9 || b2 < 1 || b2 > 9) {
+                        throw new NumberFormatException("need values between 1 and 9");
+                    }
+                    instance.setActive(b1, b2);
+                } catch (NumberFormatException ex) {
+                    Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.cmderr"), false);
+                }
+            }
+        }
     }
 }
