@@ -13,18 +13,18 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.15.2-forge31.1.0-1.0'
+version = '1.16.1-forge32.0.7-1.0'
 group = 'de.guntram.mcmod.randomblockplacement' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'randomblockplacement'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'snapshot', version: '20200514-1.16'
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.0'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.7'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

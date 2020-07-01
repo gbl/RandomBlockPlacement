@@ -119,7 +119,6 @@ public class RandomBlockPlacement
             String[] parms = e.getOriginalMessage().split(" ");
             if (parms.length > 1 && parms[1].equals("off")) {
                 instance.setInactive();
-                return;
             }
             if (parms.length > 2) {
                 try {
@@ -133,6 +132,7 @@ public class RandomBlockPlacement
                     Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.cmderr"), false);
                 }
             }
+            e.setCanceled(true);
         }
     }
 }
