@@ -1,6 +1,7 @@
 package de.guntram.mcmod.randomblockplacement;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -44,6 +46,18 @@ public class RandomBlockPlacement
         ClientRegistry.registerKeyBinding(onOff =
                 new KeyBinding("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement"));
     }
+    
+    @SubscribeEvent
+    public void keyPressed(final InputEvent.KeyInputEvent e) {
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (onOff.isPressed()) {
+            if (isActive) {
+                instance.setInactive();
+            } else {
+                instance.setActive();
+            }
+        }
+    }    
     
     public static RandomBlockPlacement getInstance() {
         return instance;
