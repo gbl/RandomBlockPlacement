@@ -1,0 +1,7 @@
+{
+    "key.categories.randomblockplacement": "RandomBlockPlacement",
+    "key.randomblockplacement.toggle": "Aléatoire activé/désactivé",
+    "msg.active": "Changement aléatoire entre les positions d'inventaire %d et %d",
+    "msg.inactive": "RandomBlockPlacement inactif",
+    "msg.cmderr": "Utilisez /rblock off, ou /rblock et deux numéros de 1 à 9"
+}
