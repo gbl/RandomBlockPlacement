@@ -1,0 +1,7 @@
+{
+    "key.categories.randomblockplacement": "RastgeleBlokKoyma",
+    "key.randomblockplacement.toggle": "Blok Karıştırıcıyı Aç/Kapa",
+    "msg.active": "%d ve %d envanter pozisyonları arasındaki bloklar rastgele değiştiriliyor",
+    "msg.inactive": "RandomBlockPlacement (RastgeleBlokKoyma) devre dışı",
+    "msg.cmderr": "/rblock off yazın veya /rblock yazıp önüne 1 ile 9 arası iki numara koyun"
+}

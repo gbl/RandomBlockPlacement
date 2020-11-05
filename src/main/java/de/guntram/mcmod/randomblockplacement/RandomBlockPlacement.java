@@ -3,15 +3,16 @@ package de.guntram.mcmod.randomblockplacement;
 import com.mojang.brigadier.CommandDispatcher;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.argument;
 import static io.github.cottonmc.clientcommands.ArgumentBuilders.literal;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
@@ -19,7 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
 public class RandomBlockPlacement implements ClientModInitializer, ClientCommandPlugin
@@ -30,10 +30,11 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     private static RandomBlockPlacement instance;
     private boolean isActive;
     private int minSlot, maxSlot;
-    private FabricKeyBinding onOff;
+    private KeyBinding onOff;
     
     @Override
     public void onInitializeClient() {
+        CrowdinTranslate.downloadTranslations(MODID);
         instance = this;
         setKeyBindings();
         isActive=false;
@@ -43,12 +44,8 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     
     private void setKeyBindings() {
         final String category = "key.categories.randomblockplacement";
-        KeyBindingRegistry.INSTANCE.addCategory(category);
-        KeyBindingRegistry.INSTANCE.register(
-            onOff = FabricKeyBinding.Builder
-                .create(new Identifier("randomblockplacement:toggle"), InputUtil.Type.KEYSYM, GLFW_KEY_R, category)
-                .build());
-        ClientTickCallback.EVENT.register(e->processKeyBinds());
+        KeyBindingHelper.registerKeyBinding(onOff = new KeyBinding("key.randomblockplacement.toggle", InputUtil.Type.KEYSYM, GLFW_KEY_R, category));
+        ClientTickEvents.END_CLIENT_TICK.register(e->processKeyBinds());
     }
     
     private void processKeyBinds() {
