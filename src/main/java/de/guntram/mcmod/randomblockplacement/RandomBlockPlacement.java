@@ -79,7 +79,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
     }
 
     public void onPlayerInteract() {
-        PlayerInventory inventory = MinecraftClient.getInstance().player.inventory;
+        PlayerInventory inventory = MinecraftClient.getInstance().player.getInventory();
         int index=inventory.selectedSlot;
         if (isActive && index>=minSlot && index<=maxSlot
             && ( inventory.getStack(index).getItem() == Items.AIR
