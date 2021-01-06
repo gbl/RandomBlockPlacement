@@ -1,7 +1,7 @@
 {
-    "key.categories.randomblockplacement": "RandomBlockPlacement",
-    "key.randomblockplacement.toggle": "Randomizer on/off",
-    "msg.active": "Randomly switching between inventory positions %d and %d",
-    "msg.inactive": "RandomBlockPlacement inactive",
-    "msg.cmderr": "Use /rblock off, or /rblock and two numbers from 1 to 9"
+    "key.categories.randomblockplacement": "Colocación aleatoria de bloques",
+    "key.randomblockplacement.toggle": "Aleatorizador activado/apagado",
+    "msg.active": "Cambiando al azar entre las posiciones del inventario %d y %d",
+    "msg.inactive": "Colocación aleatoria inactiva",
+    "msg.cmderr": "Usa /rblock off, o /rblock y dos números del 1 al 9"
 }

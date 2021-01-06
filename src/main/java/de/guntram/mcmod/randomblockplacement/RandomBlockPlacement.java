@@ -37,6 +37,9 @@ public class RandomBlockPlacement
         instance = this;
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::init);        
+        isActive=false;
+        minSlot=0;
+        maxSlot=8;
     }
     
     public void init(FMLCommonSetupEvent event)

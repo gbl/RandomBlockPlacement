@@ -3,8 +3,13 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
+        maven {
+            name = 'CrowdinTranslate source'
+            url = "https://minecraft.guntram.de/maven/"
+        }
     }
     dependencies {
+    	classpath 'de.guntram.mcmod:crowdin-translate:1.2'
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
@@ -13,12 +18,15 @@ plugins {
         id "com.modrinth.minotaur" version "1.1.0"
 }
 
+apply plugin: 'de.guntram.mcmod.crowdin-translate'
+crowdintranslate.crowdinProjectName = 'randomblockplacement'
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.2-forge33.0.5-1.0'
+version = '1.16.2-forge33.0.5-1.1'
 group = 'de.guntram.mcmod.randomblockplacement' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'randomblockplacement'
 
@@ -34,6 +42,7 @@ dependencies {
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
+    dependsOn downloadTranslations
     manifest {
         attributes([
             "Specification-Title": "randomblockplacement",
@@ -57,6 +66,8 @@ task publishModrinth (type: TaskModrinthUpload){
     versionName = project.archivesBaseName
     releaseType = 'release'
     uploadFile = jar // This is the java jar task
+    addGameVersion("1.16.2")
+    addGameVersion("1.16.3")
     addGameVersion("1.16.4")
     addLoader('forge')
 }
