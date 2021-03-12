@@ -4,11 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
-import static io.github.cottonmc.clientcommands.ArgumentBuilders.argument;
-import static io.github.cottonmc.clientcommands.ArgumentBuilders.literal;
-import io.github.cottonmc.clientcommands.ClientCommandPlugin;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -22,7 +22,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
-public class RandomBlockPlacement implements ClientModInitializer, ClientCommandPlugin
+public class RandomBlockPlacement implements ClientModInitializer
 {
     static final String MODID="randomblockplacement";
     static final String MODNAME="RandomBlockPlacement";
@@ -37,6 +37,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
         CrowdinTranslate.downloadTranslations(MODID);
         instance = this;
         setKeyBindings();
+        registerCommands(ClientCommandManager.DISPATCHER);
         isActive=false;
         minSlot=0;
         maxSlot=8;
@@ -108,8 +109,7 @@ public class RandomBlockPlacement implements ClientModInitializer, ClientCommand
         }
     }
     
-    @Override
-    public void registerCommands(CommandDispatcher<CottonClientCommandSource> cd) {
+    public void registerCommands(CommandDispatcher<FabricClientCommandSource> cd) {
 
         cd.register(
             literal("rblock")
