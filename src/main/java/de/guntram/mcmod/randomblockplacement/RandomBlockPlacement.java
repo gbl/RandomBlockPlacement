@@ -40,7 +40,7 @@ public class RandomBlockPlacement implements ClientModInitializer
         registerCommands(ClientCommandManager.DISPATCHER);
         isActive=false;
         minSlot=0;
-        maxSlot=8;
+        maxSlot=PlayerInventory.getHotbarSize() - 1;
     }
     
     private void setKeyBindings() {
@@ -71,6 +71,9 @@ public class RandomBlockPlacement implements ClientModInitializer
     public void setActive(int first, int last) {
         minSlot = first-1;
         maxSlot = last-1;
+        if (maxSlot >= PlayerInventory.getHotbarSize()) {
+            maxSlot = PlayerInventory.getHotbarSize() - 1;
+        }        
         setActive();
     }
     
@@ -82,6 +85,9 @@ public class RandomBlockPlacement implements ClientModInitializer
     public void onPlayerInteract() {
         PlayerInventory inventory = MinecraftClient.getInstance().player.getInventory();
         int index=inventory.selectedSlot;
+        if (maxSlot >= PlayerInventory.getHotbarSize()) {
+            maxSlot = PlayerInventory.getHotbarSize() - 1;
+        }
         if (isActive && index>=minSlot && index<=maxSlot
             && ( inventory.getStack(index).getItem() == Items.AIR
                 || inventory.getStack(index).getItem() instanceof BlockItem)) {
@@ -111,6 +117,7 @@ public class RandomBlockPlacement implements ClientModInitializer
     
     public void registerCommands(CommandDispatcher<FabricClientCommandSource> cd) {
 
+        int size = PlayerInventory.getHotbarSize();
         cd.register(
             literal("rblock")
                 .then(
@@ -120,8 +127,8 @@ public class RandomBlockPlacement implements ClientModInitializer
                     })
                 )
                 .then(
-                    argument("b1", integer(1, 9)).then (
-                        argument("b2", integer(1, 9)).executes(c->{
+                    argument("b1", integer(1, size)).then (
+                        argument("b2", integer(1, size)).executes(c->{
                             instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
                             return 1;
                         })
