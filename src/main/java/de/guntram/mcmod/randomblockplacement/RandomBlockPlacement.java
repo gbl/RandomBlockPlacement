@@ -1,14 +1,14 @@
 package de.guntram.mcmod.randomblockplacement;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,10 +16,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 @Mod("randomblockplacement")
 
@@ -27,7 +27,7 @@ public class RandomBlockPlacement
 {
     static final String MODID="randomblockplacement";
     static final String VERSION="@VERSION@";
-    static KeyBinding onOff;
+    static KeyMapping onOff;
     
     private static RandomBlockPlacement instance;
     private boolean isActive;
@@ -45,15 +45,14 @@ public class RandomBlockPlacement
     public void init(FMLCommonSetupEvent event)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        // ClientCommandHandler.instance.registerCommand(this);
         ClientRegistry.registerKeyBinding(onOff =
-                new KeyBinding("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement"));
+                new KeyMapping("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement"));
     }
     
     @SubscribeEvent
     public void keyPressed(final InputEvent.KeyInputEvent e) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (onOff.isPressed()) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (onOff.consumeClick()) {
             if (isActive) {
                 instance.setInactive();
             } else {
@@ -67,7 +66,7 @@ public class RandomBlockPlacement
     }
 
     public void setInactive() {
-        Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.inactive"), false);
+        Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.inactive"), false);
         isActive=false;
     }
 
@@ -79,7 +78,7 @@ public class RandomBlockPlacement
     
     public void setActive() {
         isActive = true;
-        Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.active", minSlot+1, maxSlot+1), false);
+        Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.active", minSlot+1, maxSlot+1), false);
     }
     
    
@@ -87,11 +86,11 @@ public class RandomBlockPlacement
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock e) {
         if (e.getSide() != LogicalSide.CLIENT)
             return;
-        PlayerInventory inventory = Minecraft.getInstance().player.inventory;
-        int index=inventory.currentItem;
+        Inventory inventory = Minecraft.getInstance().player.getInventory();
+        int index=inventory.selected;
         if (isActive && index>=minSlot && index<=maxSlot
-            && ( inventory.getStackInSlot(index).getItem() == Items.AIR
-                || inventory.getStackInSlot(index).getItem() instanceof BlockItem)) {
+            && ( inventory.getItem(index).getItem() == Items.AIR
+                || inventory.getItem(index).getItem() instanceof BlockItem)) {
             int totalBlocks=0;
             for (int i=minSlot; i<=maxSlot; i++) {
                 totalBlocks+=getBlockCount(inventory, i);
@@ -102,12 +101,12 @@ public class RandomBlockPlacement
                 targetCount-=getBlockCount(inventory, targetSlot);
                 targetSlot++;
             }
-            inventory.currentItem=targetSlot;
+            inventory.selected=targetSlot;
         }
     }
     
-    private int getBlockCount(PlayerInventory inventory, int targetSlot) {
-        ItemStack stack = inventory.getStackInSlot(targetSlot);
+    private int getBlockCount(Inventory inventory, int targetSlot) {
+        ItemStack stack = inventory.getItem(targetSlot);
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
             return stack.getCount();
@@ -132,7 +131,7 @@ public class RandomBlockPlacement
                     }
                     instance.setActive(b1, b2);
                 } catch (NumberFormatException ex) {
-                    Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent("msg.cmderr"), false);
+                    Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.cmderr"), false);
                 }
             }
             e.setCanceled(true);
