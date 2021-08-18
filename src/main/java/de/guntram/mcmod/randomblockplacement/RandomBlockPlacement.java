@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
@@ -64,7 +65,10 @@ public class RandomBlockPlacement implements ClientModInitializer
     }
 
     public void setInactive() {
-        MinecraftClient.getInstance().player.sendMessage(new TranslatableText("msg.inactive"), false);
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) {
+            player.sendMessage(new TranslatableText("msg.inactive"), false);
+        }
         isActive=false;
     }
 
@@ -78,12 +82,19 @@ public class RandomBlockPlacement implements ClientModInitializer
     }
     
     public void setActive() {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) {
+            player.sendMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
+        }
         isActive = true;
-        MinecraftClient.getInstance().player.sendMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
     }
 
     public void onPlayerInteract() {
-        PlayerInventory inventory = MinecraftClient.getInstance().player.getInventory();
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        PlayerInventory inventory = player.getInventory();
         int index=inventory.selectedSlot;
         if (maxSlot >= PlayerInventory.getHotbarSize()) {
             maxSlot = PlayerInventory.getHotbarSize() - 1;
