@@ -1,7 +1,7 @@
 {
-    "key.categories.randomblockplacement": "Случайное размещение блока",
+    "key.categories.randomblockplacement": "Случайный выбор блока",
     "key.randomblockplacement.toggle": "Включение / выключение рандомизатора",
-    "msg.active": "Случайное переключение между позициями инвентаря%d и%d",
+    "msg.active": "Случайное переключение между позициями инвентаря %d и%d",
     "msg.inactive": "Случайное размещение блоков неактивно",
     "msg.cmderr": "Используйте / rblock off или / rblock и два числа от 1 до 9"
 }
