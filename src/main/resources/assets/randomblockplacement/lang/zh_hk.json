@@ -1,0 +1,7 @@
+{
+    "key.categories.randomblockplacement": "随机方块放置",
+    "key.randomblockplacement.toggle": "随即放置 开/关",
+    "msg.active": "在快捷栏位置 %d 到 %d 格之间随机切换",
+    "msg.inactive": "随机方块放置关闭",
+    "msg.cmderr": "使用 /rblock off 或 /rblock 和两个从 1 到 9 的数字"
+}

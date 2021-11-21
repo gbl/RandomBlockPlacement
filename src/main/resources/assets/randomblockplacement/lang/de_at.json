@@ -1,0 +1,7 @@
+{
+    "key.categories.randomblockplacement": "RandomBlockPlacement",
+    "key.randomblockplacement.toggle": "Zufall an/aus",
+    "msg.active": "Wähle zufällig zwischen Positionen %d bis %d",
+    "msg.inactive": "RandomBlockPlacement inaktiv",
+    "msg.cmderr": "/rblock off, or /rblock und zwei Zahlen von 1 bis 9"
+}

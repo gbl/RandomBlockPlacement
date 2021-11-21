@@ -20,8 +20,7 @@
       "fabric": "*"
     },
     "recommends": {
-      "modmenu" : "*",
-      "modupdater": ">=1.1.7"        
+      "modmenu" : "*"
     },
     "name": "RandomBlockPlacement",
     "description": "Randomly switch between hotbar slots to build structures consisting of a mix of several blocks",
