@@ -5,10 +5,10 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +20,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
 public class RandomBlockPlacement implements ClientModInitializer
@@ -67,7 +67,7 @@ public class RandomBlockPlacement implements ClientModInitializer
     public void setInactive() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
-            player.sendMessage(new TranslatableText("msg.inactive"), false);
+            player.sendMessage(Text.translatable("msg.inactive"), false);
         }
         isActive=false;
     }
@@ -84,7 +84,7 @@ public class RandomBlockPlacement implements ClientModInitializer
     public void setActive() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
-            player.sendMessage(new TranslatableText("msg.active", minSlot+1, maxSlot+1), false);
+            player.sendMessage(Text.translatable("msg.active", minSlot+1, maxSlot+1), false);
         }
         isActive = true;
     }
