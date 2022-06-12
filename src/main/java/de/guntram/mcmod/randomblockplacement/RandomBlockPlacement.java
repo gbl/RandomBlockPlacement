@@ -8,6 +8,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -38,7 +39,7 @@ public class RandomBlockPlacement implements ClientModInitializer
         CrowdinTranslate.downloadTranslations(MODID);
         instance = this;
         setKeyBindings();
-        registerCommands(ClientCommandManager.DISPATCHER);
+        registerCommands();
         isActive=false;
         minSlot=0;
         maxSlot=PlayerInventory.getHotbarSize() - 1;
@@ -126,25 +127,26 @@ public class RandomBlockPlacement implements ClientModInitializer
         }
     }
     
-    public void registerCommands(CommandDispatcher<FabricClientCommandSource> cd) {
-
+    public void registerCommands() {
         int size = PlayerInventory.getHotbarSize();
-        cd.register(
-            literal("rblock")
-                .then(
-                    literal("off").executes(c->{
-                        instance.setInactive();
-                        return 1;
-                    })
-                )
-                .then(
-                    argument("b1", integer(1, size)).then (
-                        argument("b2", integer(1, size)).executes(c->{
-                            instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+        	dispatcher.register(
+                literal("rblock")
+                    .then(
+                        literal("off").executes(c->{
+                            instance.setInactive();
                             return 1;
                         })
                     )
-                )
-        );
+                    .then(
+                        argument("b1", integer(1, size)).then (
+                            argument("b2", integer(1, size)).executes(c->{
+                                instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
+                                return 1;
+                            })
+                        )
+                    )
+            );
+        });
     }
 }
