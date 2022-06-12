@@ -3,7 +3,7 @@ package de.guntram.mcmod.randomblockplacement;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -66,7 +66,7 @@ public class RandomBlockPlacement
     }
 
     public void setInactive() {
-        Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.inactive"), false);
+        Minecraft.getInstance().player.displayClientMessage(Component.translatable("msg.inactive"), false);
         isActive=false;
     }
 
@@ -78,7 +78,7 @@ public class RandomBlockPlacement
     
     public void setActive() {
         isActive = true;
-        Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.active", minSlot+1, maxSlot+1), false);
+        Minecraft.getInstance().player.displayClientMessage(Component.translatable("msg.active", minSlot+1, maxSlot+1), false);
     }
     
    
@@ -131,7 +131,7 @@ public class RandomBlockPlacement
                     }
                     instance.setActive(b1, b2);
                 } catch (NumberFormatException ex) {
-                    Minecraft.getInstance().player.displayClientMessage(new TranslatableComponent("msg.cmderr"), false);
+                    Minecraft.getInstance().player.displayClientMessage(Component.translatable("msg.cmderr"), false);
                 }
             }
             e.setCanceled(true);
