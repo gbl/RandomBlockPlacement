@@ -9,7 +9,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,12 +44,11 @@ public class RandomBlockPlacement
     public void init(FMLCommonSetupEvent event)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        ClientRegistry.registerKeyBinding(onOff =
-                new KeyMapping("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement"));
+        onOff = new KeyMapping("key.randomblockplacement.toggle", 'R', "key.categories.randomblockplacement");
     }
     
     @SubscribeEvent
-    public void keyPressed(final InputEvent.KeyInputEvent e) {
+    public void keyPressed(final InputEvent.Key e) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (onOff.consumeClick()) {
             if (isActive) {
