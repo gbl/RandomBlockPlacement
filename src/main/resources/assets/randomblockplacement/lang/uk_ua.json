@@ -1,7 +1,7 @@
 {
-    "key.categories.randomblockplacement": "RandomBlockPlacement",
-    "key.randomblockplacement.toggle": "Randomizer on/off",
-    "msg.active": "Randomly switching between inventory positions %d and %d",
-    "msg.inactive": "RandomBlockPlacement inactive",
-    "msg.cmderr": "Use /rblock off, or /rblock and two numbers from 1 to 9"
+    "key.categories.randomblockplacement": "Випадкове розміщення блоків",
+    "key.randomblockplacement.toggle": "Випадковість увімкнена/вимкнена",
+    "msg.active": "Випадкове перемикання інвентарю між позиціями %d та %d",
+    "msg.inactive": "Випадкове позміщення блоків неактивне",
+    "msg.cmderr": "Використовуйте /rblock off, або /rblock та дві цифри від 1 до 9"
 }
