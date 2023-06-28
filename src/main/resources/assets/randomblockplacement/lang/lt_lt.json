@@ -1,6 +1,6 @@
 {
-    "key.categories.randomblockplacement": "RandomBlockPIacement",
-    "key.randomblockplacement.toggle": "Įjungti/išjungti RandomBlockPlacement",
+    "key.categories.randomblockplacement": "AtsitiktinisBlokųPastatymas",
+    "key.randomblockplacement.toggle": "Įjungti/išjungti AtsitiktinįBlokųPastatymą",
     "msg.active": "Atsitiktinai perjungiama tarp %d ir %d inventoriaus langelių",
     "msg.inactive": "RandomBlockPlacement išjungtas",
     "msg.cmderr": "Naudokite \"/rblock off\" arba \"/rblock\" ir du skaičius tarp 1 ir 9"

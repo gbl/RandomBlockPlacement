@@ -1,7 +1,7 @@
 {
     "key.categories.randomblockplacement": "RandomBlockPlacement",
-    "key.randomblockplacement.toggle": "Randomizer on/off",
-    "msg.active": "Randomly switching between inventory positions %d and %d",
-    "msg.inactive": "RandomBlockPlacement inactive",
-    "msg.cmderr": "Use /rblock off, or /rblock and two numbers from 1 to 9"
+    "key.randomblockplacement.toggle": "랜덤으로 설치하기 켜기/끄기",
+    "msg.active": "랜덤으로 %d 슬롯과 %d 슬롯을 바꾸는 중입니다",
+    "msg.inactive": "RandomBlockPlacement 비활성화",
+    "msg.cmderr": "/rblock off나 /rblock <1-9>를 사용"
 }
