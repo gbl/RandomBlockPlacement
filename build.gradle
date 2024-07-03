@@ -1,41 +1,31 @@
-buildscript {
-    dependencies {
-        classpath 'de.guntram.mcmod:crowdin-translate:1.4+1.19-pre2'
-    }
-    repositories {
-        maven {
-            name = 'CrowdinTranslate source'
-            url = "https://minecraft.guntram.de/maven/"
-        }
-    }
-}
+
 
 plugins {
-    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'fabric-loom' version '1.7-SNAPSHOT'
     id "com.modrinth.minotaur" version "2.+"
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
-apply plugin: 'de.guntram.mcmod.crowdin-translate'
-crowdintranslate.crowdinProjectName = 'randomblockplacement'
+//apply plugin: 'de.guntram.mcmod.crowdin-translate'
+//crowdintranslate.crowdinProjectName = 'randomblockplacement'
 
 repositories {
-	maven {
-		url = "https://maven.fabricmc.net/"
-	}
-	maven {
-		url = "https://minecraft.guntram.de/maven/"
-	}
-	maven {
-		url = "https://maven.terraformersmc.com/releases/"
-	}
+    maven {
+        url = "https://maven.fabricmc.net/"
+    }
+    maven {
+        url = "https://minecraft.guntram.de/maven/"
+    }
+    maven {
+        url = "https://maven.terraformersmc.com/releases/"
+    }
 }
 
-sourceCompatibility = 17
-targetCompatibility = 17
+sourceCompatibility = 21
+targetCompatibility = 21
 
 ext.Versions = new Properties()
-Versions.load(file("Versionfiles/mcversion-1.20.4.properties").newReader())
+Versions.load(file("Versionfiles/mcversion-1.21.properties").newReader())
 
 archivesBaseName = "randomblockplacement"
 ext.projectVersion = "1.1.4"
@@ -47,7 +37,7 @@ loom {
 }
 
 processResources {
-    dependsOn downloadTranslations
+    //dependsOn downloadTranslations
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
@@ -62,8 +52,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${Versions['fabric_version']}"
     modImplementation "com.terraformersmc:modmenu:${Versions['modmenu_version']}"
 
-    modImplementation "de.guntram.mcmod:crowdin-translate:${Versions['crowdintranslate_version']}"
-    include "de.guntram.mcmod:crowdin-translate:${Versions['crowdintranslate_version']}"
+    //modImplementation "de.guntram.mcmod:crowdin-translate:${Versions['crowdintranslate_version']}"
+    //include "de.guntram.mcmod:crowdin-translate:${Versions['crowdintranslate_version']}"
 }
 
 java {
@@ -71,7 +61,7 @@ java {
 }
 
 jar {
-	from "LICENSE"
+    from "LICENSE"
 }
 
 import com.modrinth.minotaur.TaskModrinthUpload

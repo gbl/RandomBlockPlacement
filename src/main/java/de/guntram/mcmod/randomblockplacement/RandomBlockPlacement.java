@@ -3,7 +3,7 @@ package de.guntram.mcmod.randomblockplacement;
 import com.mojang.brigadier.CommandDispatcher;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
+//import de.guntram.mcmod.crowdintranslate.CrowdinTranslate;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -33,10 +33,10 @@ public class RandomBlockPlacement implements ClientModInitializer
     private boolean isActive;
     private int minSlot, maxSlot;
     private KeyBinding onOff;
-    
+
     @Override
     public void onInitializeClient() {
-        CrowdinTranslate.downloadTranslations(MODID);
+        //CrowdinTranslate.downloadTranslations(MODID);
         instance = this;
         setKeyBindings();
         registerCommands();
@@ -44,13 +44,13 @@ public class RandomBlockPlacement implements ClientModInitializer
         minSlot=0;
         maxSlot=PlayerInventory.getHotbarSize() - 1;
     }
-    
+
     private void setKeyBindings() {
         final String category = "key.categories.randomblockplacement";
         KeyBindingHelper.registerKeyBinding(onOff = new KeyBinding("key.randomblockplacement.toggle", InputUtil.Type.KEYSYM, GLFW_KEY_R, category));
         ClientTickEvents.END_CLIENT_TICK.register(e->processKeyBinds());
     }
-    
+
     private void processKeyBinds() {
         if (onOff.wasPressed()) {
             if (isActive) {
@@ -78,10 +78,10 @@ public class RandomBlockPlacement implements ClientModInitializer
         maxSlot = last-1;
         if (maxSlot >= PlayerInventory.getHotbarSize()) {
             maxSlot = PlayerInventory.getHotbarSize() - 1;
-        }        
+        }
         setActive();
     }
-    
+
     public void setActive() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
@@ -101,7 +101,7 @@ public class RandomBlockPlacement implements ClientModInitializer
             maxSlot = PlayerInventory.getHotbarSize() - 1;
         }
         if (isActive && index>=minSlot && index<=maxSlot
-            && ( inventory.getStack(index).getItem() == Items.AIR
+                && ( inventory.getStack(index).getItem() == Items.AIR
                 || inventory.getStack(index).getItem() instanceof BlockItem)) {
             int totalBlocks=0;
             for (int i=minSlot; i<=maxSlot; i++) {
@@ -116,7 +116,7 @@ public class RandomBlockPlacement implements ClientModInitializer
             inventory.selectedSlot=targetSlot;
         }
     }
-    
+
     private int getBlockCount(PlayerInventory inventory, int targetSlot) {
         ItemStack stack = inventory.getStack(targetSlot);
         Item item = stack.getItem();
@@ -126,26 +126,26 @@ public class RandomBlockPlacement implements ClientModInitializer
             return 0;
         }
     }
-    
+
     public void registerCommands() {
         int size = PlayerInventory.getHotbarSize();
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-        	dispatcher.register(
-                literal("rblock")
-                    .then(
-                        literal("off").executes(c->{
-                            instance.setInactive();
-                            return 1;
-                        })
-                    )
-                    .then(
-                        argument("b1", integer(1, size)).then (
-                            argument("b2", integer(1, size)).executes(c->{
-                                instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
-                                return 1;
-                            })
-                        )
-                    )
+            dispatcher.register(
+                    literal("rblock")
+                            .then(
+                                    literal("off").executes(c->{
+                                        instance.setInactive();
+                                        return 1;
+                                    })
+                            )
+                            .then(
+                                    argument("b1", integer(1, size)).then (
+                                            argument("b2", integer(1, size)).executes(c->{
+                                                instance.setActive(getInteger(c, "b1"), getInteger(c, "b2"));
+                                                return 1;
+                                            })
+                                    )
+                            )
             );
         });
     }
